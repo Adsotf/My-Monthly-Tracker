@@ -149,7 +149,6 @@ const GroupSection = ({ title, groupKey, icon: Icon, categories, updateCategory,
                       type="text" 
                       value={cat.name}
                       onChange={(e) => updateCategory(cat.id, 'name', e.target.value)}
-                      /* text-base prevents iOS zoom */
                       className="w-full bg-transparent border-b border-transparent focus:border-slate-500 text-slate-200 placeholder-slate-600 p-0 text-base focus:ring-0 transition-colors"
                       placeholder="Name..."
                     />
@@ -158,8 +157,7 @@ const GroupSection = ({ title, groupKey, icon: Icon, categories, updateCategory,
                     <input 
                       type="number" 
                       value={cat.planned}
-                      onChange={(e) => updateCategory(cat.id, 'planned', parseFloat(e.target.value) || 0)}
-                      /* text-base prevents iOS zoom */
+                      onChange={(e) => updateCategory(cat.id, 'planned', e.target.value)}
                       className="w-full text-right bg-transparent border-b border-transparent focus:border-slate-500 text-slate-400 p-0 text-base focus:ring-0 transition-colors"
                     />
                   </td>
@@ -167,8 +165,7 @@ const GroupSection = ({ title, groupKey, icon: Icon, categories, updateCategory,
                     <input 
                       type="number" 
                       value={cat.actual}
-                      onChange={(e) => updateCategory(cat.id, 'actual', parseFloat(e.target.value) || 0)}
-                      /* text-base prevents iOS zoom */
+                      onChange={(e) => updateCategory(cat.id, 'actual', e.target.value)}
                       className="w-full text-right bg-transparent border-b border-transparent focus:border-slate-500 text-slate-100 font-bold p-0 text-base focus:ring-0 transition-colors"
                     />
                   </td>
@@ -229,17 +226,19 @@ const App = () => {
     const groups = { Needs: { planned: 0, actual: 0 }, Wants: { planned: 0, actual: 0 }, Savings: { planned: 0, actual: 0 } };
     categories.forEach(cat => {
       if (groups[cat.group]) {
+        // We use Number() here so that empty strings "" from deleting are treated as 0 for math
         groups[cat.group].planned += (Number(cat.planned) || 0);
         groups[cat.group].actual += (Number(cat.actual) || 0);
       }
     });
     const totalActual = Object.values(groups).reduce((acc, g) => acc + g.actual, 0);
-    const remaining = income - totalActual;
+    const remaining = (Number(income) || 0) - totalActual;
     return { groups, totalActual, remaining };
   }, [categories, income]);
 
   // HANDLERS
   const updateCategory = (id, field, value) => {
+    // We do NOT use parseFloat here anymore. This allows the value to be an empty string.
     setCategories(prev => prev.map(cat => cat.id === id ? { ...cat, [field]: value } : cat));
   };
   const addCategory = (group) => {
@@ -269,7 +268,7 @@ const App = () => {
                   <option value="£">£</option><option value="$">$</option><option value="€">€</option>
                 </select>
                 <input 
-                  type="number" value={income} onChange={(e) => setIncome(parseFloat(e.target.value) || 0)}
+                  type="number" value={income} onChange={(e) => setIncome(e.target.value)}
                   className="w-20 text-right font-bold text-base bg-transparent text-white border-l border-slate-600 px-2 focus:ring-0"
                 />
              </div>
@@ -296,7 +295,7 @@ const App = () => {
              <div className="bg-slate-800 p-4 rounded-xl shadow-lg border border-slate-700 text-center flex-1 flex flex-col justify-center">
                 <div className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Invested</div>
                 <div className="text-2xl font-bold mt-1 text-emerald-400">
-                  {Math.round((summary.groups.Savings.actual / income) * 100)}%
+                  {Math.round((summary.groups.Savings.actual / (Number(income) || 1)) * 100)}%
                 </div>
              </div>
           </div>
