@@ -1,17 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
 /**
- * --------------------------------------------------------
  * 1. CUSTOM LOGO SETTINGS
  * Paste your image link between the quotes below.
- * Example: "https://raw.githubusercontent.com/username/repo/main/logo.png"
- * --------------------------------------------------------
  */
 const LOGO_URL = "https://github.com/Adsotf/My-Monthly-Tracker/blob/main/Gemini_Generated_Image_4nloj54nloj54nlo.png?raw=true"; 
 
-
 /**
- * ICONS (Dark Mode Optimized)
+ * ICONS
  */
 const IconWrapper = ({ children, color = "currentColor", size = 20, className = "" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -30,7 +26,7 @@ const Icons = {
 };
 
 /**
- * UTILITY FUNCTIONS
+ * UTILITIES
  */
 const formatCurrency = (amount, currencySymbol = '£') => {
   return new Intl.NumberFormat('en-GB', {
@@ -43,15 +39,15 @@ const formatCurrency = (amount, currencySymbol = '£') => {
 
 const getGroupColor = (group) => {
   switch(group) {
-    case 'Needs': return '#60a5fa'; // Light Blue
-    case 'Savings': return '#34d399'; // Emerald Green
-    case 'Wants': return '#a78bfa'; // Light Purple
+    case 'Needs': return '#60a5fa';
+    case 'Savings': return '#34d399';
+    case 'Wants': return '#a78bfa';
     default: return '#9ca3af';
   }
 };
 
 /**
- * COMPONENT: PIE CHART (Smaller & Centered)
+ * COMPONENTS
  */
 const SimplePieChart = ({ data }) => {
   const total = data.reduce((acc, item) => acc + item.value, 0);
@@ -77,7 +73,6 @@ const SimplePieChart = ({ data }) => {
           currentAngle += sliceAngle;
           return <path key={slice.name} d={pathData} fill={slice.color} className="opacity-90 hover:opacity-100 transition-opacity" />;
         })}
-        {/* Inner circle for Donut look - matches bg color */}
         <circle cx="0" cy="0" r="0.65" fill="#1e293b" /> 
       </svg>
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -90,9 +85,6 @@ const SimplePieChart = ({ data }) => {
   );
 };
 
-/**
- * COMPONENT: BAR CHART
- */
 const SimpleBarChart = ({ planned, actual, color }) => {
   const max = Math.max(planned, actual, 100); 
   const plannedPercent = (planned / max) * 100;
@@ -118,9 +110,6 @@ const SimpleBarChart = ({ planned, actual, color }) => {
   );
 };
 
-/**
- * COMPONENT: GROUP SECTION
- */
 const GroupSection = ({ title, groupKey, icon: Icon, categories, updateCategory, deleteCategory, addCategory, currency, summary }) => {
   const groupData = categories.filter(c => c.group === groupKey);
   const groupSummary = summary.groups[groupKey];
@@ -160,7 +149,8 @@ const GroupSection = ({ title, groupKey, icon: Icon, categories, updateCategory,
                       type="text" 
                       value={cat.name}
                       onChange={(e) => updateCategory(cat.id, 'name', e.target.value)}
-                      className="w-full bg-transparent border-b border-transparent focus:border-slate-500 text-slate-200 placeholder-slate-600 p-0 text-sm focus:ring-0 transition-colors"
+                      /* text-base prevents iOS zoom */
+                      className="w-full bg-transparent border-b border-transparent focus:border-slate-500 text-slate-200 placeholder-slate-600 p-0 text-base focus:ring-0 transition-colors"
                       placeholder="Name..."
                     />
                   </td>
@@ -169,7 +159,8 @@ const GroupSection = ({ title, groupKey, icon: Icon, categories, updateCategory,
                       type="number" 
                       value={cat.planned}
                       onChange={(e) => updateCategory(cat.id, 'planned', parseFloat(e.target.value) || 0)}
-                      className="w-full text-right bg-transparent border-b border-transparent focus:border-slate-500 text-slate-400 p-0 text-sm focus:ring-0 transition-colors"
+                      /* text-base prevents iOS zoom */
+                      className="w-full text-right bg-transparent border-b border-transparent focus:border-slate-500 text-slate-400 p-0 text-base focus:ring-0 transition-colors"
                     />
                   </td>
                   <td className="px-2 py-3 text-right">
@@ -177,7 +168,8 @@ const GroupSection = ({ title, groupKey, icon: Icon, categories, updateCategory,
                       type="number" 
                       value={cat.actual}
                       onChange={(e) => updateCategory(cat.id, 'actual', parseFloat(e.target.value) || 0)}
-                      className="w-full text-right bg-transparent border-b border-transparent focus:border-slate-500 text-slate-100 font-bold p-0 text-sm focus:ring-0 transition-colors"
+                      /* text-base prevents iOS zoom */
+                      className="w-full text-right bg-transparent border-b border-transparent focus:border-slate-500 text-slate-100 font-bold p-0 text-base focus:ring-0 transition-colors"
                     />
                   </td>
                   <td className="px-2 py-3 text-center">
@@ -203,9 +195,6 @@ const GroupSection = ({ title, groupKey, icon: Icon, categories, updateCategory,
   );
 };
 
-/**
- * MAIN APP COMPONENT
- */
 const App = () => {
   // DEFAULT DATA
   const defaultCategories = [
@@ -262,8 +251,6 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 font-sans pb-20">
-      
-      {/* HEADER */}
       <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-10">
         <div className="max-w-xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -278,7 +265,7 @@ const App = () => {
           </div>
           <div className="flex flex-col items-end">
              <div className="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700">
-                <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="bg-transparent border-none font-bold text-slate-400 text-sm w-8 pl-2 focus:ring-0 cursor-pointer">
+                <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="bg-transparent border-none font-bold text-slate-400 text-base w-8 pl-2 focus:ring-0 cursor-pointer">
                   <option value="£">£</option><option value="$">$</option><option value="€">€</option>
                 </select>
                 <input 
@@ -291,10 +278,7 @@ const App = () => {
       </header>
 
       <main className="max-w-xl mx-auto px-4 py-6">
-        
-        {/* DASHBOARD */}
         <div className="grid grid-cols-2 gap-4 mb-6">
-          {/* Pie Chart Card */}
           <div className="bg-slate-800 p-4 rounded-xl shadow-lg border border-slate-700 flex flex-col items-center justify-center">
             <SimplePieChart data={[
               { name: 'Needs', value: summary.groups.Needs.actual, color: getGroupColor('Needs') },
@@ -302,8 +286,6 @@ const App = () => {
               { name: 'Savings', value: summary.groups.Savings.actual, color: getGroupColor('Savings') }
             ]} />
           </div>
-
-          {/* Stats Cards */}
           <div className="flex flex-col gap-4">
              <div className="bg-slate-800 p-4 rounded-xl shadow-lg border border-slate-700 text-center flex-1 flex flex-col justify-center">
                 <div className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Remaining</div>
@@ -320,14 +302,12 @@ const App = () => {
           </div>
         </div>
 
-        {/* COMPARISON BARS */}
         <div className="bg-slate-800 p-5 rounded-xl shadow-lg border border-slate-700 mb-8">
            <SimpleBarChart planned={summary.groups.Needs.planned} actual={summary.groups.Needs.actual} color={getGroupColor('Needs')} />
            <SimpleBarChart planned={summary.groups.Wants.planned} actual={summary.groups.Wants.actual} color={getGroupColor('Wants')} />
            <SimpleBarChart planned={summary.groups.Savings.planned} actual={summary.groups.Savings.actual} color={getGroupColor('Savings')} />
         </div>
 
-        {/* LISTS - Now passing all necessary props to external component */}
         <GroupSection 
           title="Needs" 
           groupKey="Needs" 
